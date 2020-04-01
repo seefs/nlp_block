@@ -305,7 +305,7 @@ class EmbeddingsLayer(Layer):
         em_m = get_em_m(input_x, st_size=self.style_size) # 0~16
         
         # pxvm
-        out_p = get_pxvm(em_p, em_p, input_mi, input_n, input_cnt, max_seq=self.seq_size)
+        #out_p = get_pxvm(em_p, em_p, input_mi, input_n, input_cnt, max_seq=self.seq_size)
         out_v = get_pxvm(em_p, em_v, input_mi, input_n, input_cnt, max_seq=self.seq_size)
         out_x = get_pxvm(em_p, em_x, input_mi, input_n, input_cnt, max_seq=self.seq_size)
         out_m = get_pxvm(em_p, em_m, input_mi, input_n, input_cnt, max_seq=self.seq_size)

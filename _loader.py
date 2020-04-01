@@ -173,6 +173,12 @@ class LoadData:
         self.max_seq_len   = 0
         self.sub_path      = sub_path
 
+        # load pre
+        self.max_seq_len = 0
+        self.sents_len   = 0
+        # use as logging
+        self.data_file   = None
+
         # load text
         if self.train_enable and not os.path.isfile(pre_train_file.format(self.sub_path)):
             self._load_data_from_csv()
@@ -241,10 +247,12 @@ class LoadData:
         if self.train_enable:
             train = load_directory_data(train_csv_file.format(self.sub_path))
             (self.train_t1, self.train_t2, self.train_m1, self.train_m2, self.train_cnt1, self.train_cnt2, self.train_y) = self._prepare_and_pad_df(train)
-        
+            self.data_file  = os.path.join(train_csv_file.format(self.sub_path))
+            
         if self.test_enable:
             test  = load_directory_data(test_csv_file.format(self.sub_path))
             (self.test_t1,  self.test_t2,  self.test_m1,  self.test_m2, self.test_cnt1,  self.test_cnt2,  self.test_y) = self._prepare_and_pad_df(test)
+            self.data_file  = os.path.join(test_csv_file.format(self.sub_path))
     
     def _prepare_and_pad_df(self, input_data):
         # reindex
@@ -270,6 +278,7 @@ class LoadData:
             self.train_y    = load_preprocess_data(np.int, sub_path=self.sub_path, name='train_y')
             self.max_seq_len = len(self.train_m1[0])
             self.sents_len  = len(self.train_m1)
+            self.data_file  = os.path.join(preprocessPath.format(self.sub_path), '{}.{}'.format('train_x', "CSV"))
         if self.test_enable:
             self.test_t1    = load_preprocess_data(np.str, sub_path=self.sub_path, name='test_t1')
             self.test_t2    = load_preprocess_data(np.str, sub_path=self.sub_path, name='test_t2')
@@ -280,6 +289,7 @@ class LoadData:
             self.test_y     = load_preprocess_data(np.int, sub_path=self.sub_path, name='test_y')
             self.max_seq_len = len(self.test_m1[0])
             self.sents_len  = len(self.test_m1)
+            self.data_file  = os.path.join(preprocessPath.format(self.sub_path), '{}.{}'.format('test_x', "CSV"))
 
     def _save_data_to_np(self):
         if self.train_enable:

@@ -7,6 +7,14 @@ import numpy as np
 from tensorflow.python import keras
 from tensorflow.python.keras import backend as K
 
+
+flags = tf.compat.v1.flags
+FLAGS = flags.FLAGS
+
+# parameters
+flags.DEFINE_string("test_type", None, "test type.")
+
+
 # path
 curPath  = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
@@ -27,21 +35,21 @@ from _token import TokenizerChg
 
     
 # test-1:
-#   句子--分块
+#   编码-->填充
 def m2n_test():
 #    m   = [[ 6, 7, 3, 2, 0]]
     m   = [[ 10, 3, 5, 11]]
 #    m   = [[7, 3, 11, 9, 10, 10]]
     cnt = [4]
-    ret = m2n(m, cnt, max_space=5, debug=True)
-    print("--ret--", ret)
-
-#m2n_test()
+    n1, mi1  = m2n(m, cnt, max_space=5, debug=True)
+    print("--m--", m)
+    print("--n1--", n1)
+    print("--mi1--", mi1)
 
 
 
 # test-2:
-#   词性--填充
+#   词-->编码-->填充
 def run_block_parsing(text):
     # 没必要打印分词过程
     token_chg = TokenizerChg(db_path=sqlite3_file, debug_log=False)
@@ -77,12 +85,12 @@ def tokens_parsing_main():
 #            ["花呗都用在哪里"], 
 #            ["花呗都能在哪里购物"],
 
-#            ["花呗分期付款的需要付手续费吗"], 
-#            ["花呗分期怎么才能免手续费"],
+            ["花呗分期付款的需要付手续费吗"], 
+            ["花呗分期怎么才能免手续费"],
             
             
-            ["花呗支付支持农信银行卡不"], 
-            ["支持农信银行卡还花呗吗"],
+#            ["花呗支付支持农信银行卡不"], 
+#            ["支持农信银行卡还花呗吗"],
 
            ]
 
@@ -90,11 +98,23 @@ def tokens_parsing_main():
     run_block_parsing(text);
 
 
+def main(_):
+    print ("  test_type: %s" % (FLAGS.test_type))
+    
+# test-1:
+#   编码-->填充隐藏词性
+    if FLAGS.test_type == "m2n":
+        m2n_test()
+
+# test-2:
+#   词-->编码-->填充隐藏词性
+    if FLAGS.test_type == "tokens_parsing":
+        tokens_parsing_main()
+
 
 if __name__ == "__main__":
-    tokens_parsing_main()
-
-
+    flags.mark_flag_as_required("test_type")
+    tf.compat.v1.app.run()
 
 
 

@@ -8,6 +8,15 @@ from keras import backend as K
 import numpy as np
 import copy
 
+flags = tf.compat.v1.flags
+FLAGS = flags.FLAGS
+
+# parameters
+flags.DEFINE_string("data_file", None, "data file.")
+flags.DEFINE_string("sub_model_path", None, "sub model path.")
+flags.DEFINE_string("test_type", None, "test type.")
+flags.DEFINE_integer("bit", 0, "bit")
+
 
 # path
 curPath  = os.path.abspath(os.path.dirname(__file__))
@@ -136,25 +145,25 @@ def get_old_class(brd_sum, HP_m = None):
     return old_list
 
 
-def get_data_200():
-    brd_sum = load_debug_data(np.float, name='brd_sum_200')
-    sub_path = '_tf200_1_f1_0825'
-#    sub_path = '_tf200_2_f1_0529'
+def get_data(data_file, sub_path):
+    brd_sum = load_debug_data(np.float, name=data_file)
     y_true = load_preprocess_data(np.int, sub_path=sub_path, name='train_y')
     return brd_sum, y_true
 
-def get_data_1000():
-    brd_sum = load_debug_data(np.float, name='brd_sum_1000')
-#    sub_path = ''
-    sub_path = '_tf1000_1_f1_0653'
-    y_true = load_preprocess_data(np.int, sub_path=sub_path, name='train_y')
-    return brd_sum, y_true
 
-def test_param():
-#    brd_sum, y_true = get_data_200()
-    brd_sum, y_true = get_data_1000()
+def main(_):
+    print ("  data_file: %s" % (FLAGS.data_file))
+    print ("  sub_model_path: %s" % (FLAGS.sub_model_path))
+    print ("  test_type: %s" % (FLAGS.test_type))
+
+    
+    brd_sum, y_true = get_data(FLAGS.data_file, FLAGS.sub_model_path)
+#    brd_sum, y_true = get_data("brd_sum.txt", '_tf200_1_f1_0825')
+#    brd_sum, y_true = get_data("brd_sum.txt", '_tf1000_1_f1_0653')
+    print ("------------------------------")
     print ("  brd_sum: %s" % (tf.shape(brd_sum)))       #[200  17]
     print ("  y_true: %s" % (tf.shape(y_true)))
+
 
 ### 最大单项值:
     #   max: 3.0717332
@@ -163,15 +172,15 @@ def test_param():
     print ("  max: %s  min: %s" % (np.array(max(tmp)), np.array(min(tmp))))
     print ("------------------------------")
 
-##### 当前指标: 
+##### 单一指标1: 
     #   f1: 0.739130
     #   f1: 0.755319
-    print ("当前指标:")
+    print ("单一指标1，比较全部类型，用旧系数:")
     old_list = get_old_class(brd_sum, HP_m = None)
-    # 单独指标, 原最佳指标
     acc,f1_score = old_acc_f1(old_list, y_true)
     print("accuracy: %f, f1: %f" % (acc, f1_score))
-    print ("更新hp列表后:")
+    
+    print ("                        用最新系数1:")
 #    HP_o = np.array([0.00,  1.00, 0.95, 1.00, 1.00, 1.00,   1.00, 1.00, 1.00, 1.17, 0.80,   0.80, 0.80, 0.90, 0, 0.80,  0.80])
     HP_o = np.array([0.00,  1.00, 1.15, 1.00, 1.00, 1.00,   1.00, 1.00, 1.00, 1.695, 0.80,   0.80, 0.80, 0.90, 0, 0.80,  0.80])
     old_list = get_old_class(brd_sum,  HP_m = HP_o)
@@ -180,10 +189,10 @@ def test_param():
     print("accuracy: %f, f1: %f" % ( acc, f1_score))
     print ("------------------------------")
     
-##### 更新最佳组: 
+##### 单一指标2: 
     #   f1: 0.8115942
     #   f1: 0.73465335
-    print ("最佳组, 纯指标:")
+    print ("单一指标2，比较主要类型，用最新系数2，基准线:")
 #    HP_c = np.array([0.82,  0.50, 1.15, 1.00, 0.87, 0,  0.65, 0.94, 0, 0, 0,  0, 0, 0, 0, 0,  0])
     HP_c = np.array([1.286,  0.883, 1.117, 1.00, 1.24, 0,  0.80, 1.10, 0, 0, 0,  0, 0, 0, 0, 0,  0])
 #    hv = 2.625
@@ -193,16 +202,19 @@ def test_param():
     # 单独指标, 比混合指标低
     acc,f1_score = old_acc_f1(new_list, y_true)
     print("cur: %s, accuracy: %f, f1: %f" % (hv, acc, f1_score))
+    print ("------------------------------")
+    
+##### 混合指标: 
     # 混合指标, 新指标(new_list)为False才用旧指标(old_list)
     #   后面2个参数打印用
     f1_score = compare_acc_f1(old_list, new_list, y_true, stepC=HP_c, stepV=hv)
-    print ("更新hc列表后:")
+    print ("混合指标3, 指标2为False时用指标1:")
     print ("f1: %s" % (np.array(f1_score)))
     print ("------------------------------")
 
 
-##### 检查p=0.5000中界值: 
-    if 0:
+##### (1)检查p=0.49~0.501之前的数据，看下是否预测准确，这一段比较难控制: 
+    if FLAGS.test_type == 'mid_range':
         # 查看具体p组
         tmp_y = np.array(y_true).reshape((-1,1))
         tmp = np.concatenate([np.array(old_list),tmp_y],axis=1) 
@@ -212,18 +224,18 @@ def test_param():
             if row[0]>=0.49 and row[0]<=0.501:
                 tmp_list.append(row)
         tmp_list = np.array(tmp_list)
-        print ("检查p=0.5000中界值:")
+        print ("检查p=0.49~0.501之前的数据，看下是否预测准确，这一段比较难控制:")
         print ("---------新-------y----\n", tmp_list)
         print ("------------------------------")
 
     
-##### 以上3组值已更新, 下列计算会用到: 
+##### (2)更新以上2组系数与基准线后, 再计算最佳的基准线: 
 ##### 最佳max组, 计算sum:
     #   max hv=2.625
     #   max hv=2.4375
     #   max f1=0.8115942
     #   max f1=0.7454017
-    if 0:
+    if FLAGS.test_type == 'max_base':
         first_v = hv - 20/80.0
         f1_list = []
         for vi in range(0, 40, 1):
@@ -234,21 +246,22 @@ def test_param():
         max_f1 = max(f1_list)
         max_id = f1_list.index(max_f1)
         max_v  = max_id/80.0+first_v
+        print ("更新以上2组系数与基准线后, 再计算最佳的基准线:")
         print ("  max_f1: %s  max_v:%s" % (np.array(max_f1), np.array(max_v)))
         print ("------------------------------")
 
 
-##### 最佳max组, 计算scale:
+##### (3)固定max组系数后, 重新确认最佳系数:
     #   max f1=0.8155339
     #   max f1=0.74517363
     # 类型备注: 0(不明显) 1(不明显)
     # 排除类型: 8, 9, 10, 11, 12, 13, 14, 15
-    if 0:
+    if FLAGS.test_type == 'max_coefficient':
         HP_v = np.array([2.51,   2.43,  2.42, 2.00, 2.50, 0,  2.56, 2.58, 0, 0, 0,  0, 0, 0, 0, 0,  0])
 #        HP_c = np.array([0.82,  0.50, 1.15, 1.00, 0.87, 0,  0.65, 0.94, 0, 0, 0,  0, 0, 0, 0, 0,  0])
         HP_c = np.array([1.286,  0.883, 1.117, 1.00, 1.24, 0,  0.80, 1.10, 0, 0, 0,  0, 0, 0, 0, 0,  0])
-
-        bit = 2  ###
+        
+        bit = FLAGS.bit    ### bit = 0~16
         mark0 = np.concatenate([[0]*bit, [1], [0]*(17-bit-1)])
         mark1 = np.concatenate([[1]*bit, [0], [1]*(17-bit-1)])
         mark_c = HP_c*mark1
@@ -273,18 +286,19 @@ def test_param():
         ci     = (max_id - vi)/rngv
         max_c = ci/60.0+first_c
         max_v = vi/16.0+first_v
+        print ("固定max组系数后, 重新确认最佳系数:")
         print ("  max_f1: %s  idc:%s,idv:%s,id:%s, c:%.5f,v:%.5f" % (np.array(max_f1), ci, vi, max_id, np.array(max_c), np.array(max_v)))
 
 
-##### 最佳mean组:
+##### 固定mean组系数后, 重新确认最佳系数:
     #   max f1=0.8137254
     #   max f1=0.75205857
     # 改类型2,9作用大
-    if 0:
+    if FLAGS.test_type == 'mean_coefficient':
 #       HP_o = np.array([0.00,  1.15, 1.00, 1.00, 1.00, 1.00,   1.00, 1.00, 1.00, 1.25, 1.00,   1.00, 1.00, 1.00, 0, 1.00,  1.00])
         HP_o = np.array([0.00,  1.00, 1.15, 1.00, 1.00, 1.00,   1.00, 1.00, 1.00, 1.695, 0.80,   0.80, 0.80, 0.90, 0, 0.80,  0.80])
 
-        bit = 9
+        bit = FLAGS.bit    ### bit = 0~16
         mark0 = np.concatenate([[0]*bit, [1], [0]*(17-bit-1)])
         mark1 = np.concatenate([[1]*bit, [0], [1]*(17-bit-1)])
         mark_c = HP_o*mark1
@@ -305,6 +319,7 @@ def test_param():
         max_f1 = max(f1_list)
         max_id = f1_list.index(max_f1)
         max_c  = max_id/40.0+first_c
+        print ("固定mean组系数后, 重新确认最佳系数:")
         print ("  max_f1: %s  max_hc:%s" % (np.array(max_f1), np.array(max_c)))
         print ("------------------------------")
 
@@ -315,7 +330,7 @@ def test_param():
     #     f1=0.764969
     # 局部指标--小于0.5添加最大值:
     # 局部指标--大于0.5去掉最小值:
-    if 0:
+    if FLAGS.test_type == 'merge_show':
         partV=[
                 [0.30,0.35,2.81,5.00,0.80],
                 [0.35,0.40,2.31,5.00,0.80],
@@ -344,7 +359,7 @@ def test_param():
 ##### 混合指标曲线2: 
     #   f1=0.82524
     #   f1=0.75206
-    if 0:
+    if FLAGS.test_type == 'merge_coefficient':
         # 获取常用类型总分
         part_list = get_part_class(brd_sum, HP_c=HP_c)
         partB=[
@@ -363,7 +378,8 @@ def test_param():
                ]
         print ("局部指标:")
         
-        bit = 9        # 2; 注释掉partB对应行
+        # 要手动注释掉范围数组(partB)的对应行(与bit对应的范围重复)
+        bit = FLAGS.bit    ### bit = 0~9
         
         #范围
         #            0,False     1-2.81      2-2.31        3-2.437      4-1.75      5-1.50        6-1.687      7-1.375     8-False     9-False  
@@ -418,10 +434,8 @@ def test_param():
 
 
 
-test_param()
-
-
-
-
+if __name__ == "__main__":
+	flags.mark_flag_as_required("data_file")
+	tf.compat.v1.app.run()
 
 

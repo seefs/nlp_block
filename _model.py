@@ -111,8 +111,8 @@ def create_model(max_vocab_len, max_seq_len, max_modes_len, h5_file=None, debug=
                   metrics=[accuracy, f1])
 #                  metrics=[keras.metrics.SparseCategoricalAccuracy(name="acc"), f1])
   
-#    if debug:
-#        model.summary()
+    if not debug:
+        model.summary()
         
     init_logging(debugPath)
     
