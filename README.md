@@ -42,30 +42,43 @@ _tool.py ---------------其他, 编码与log初始化 <br>
 ## 2.训练与评估指令
 
 ### 2.1 训练(不可用, 非常卡)
-* 在8G内存电脑上测试, 1000条时非常卡；100条没问题
+* 在8G内存电脑上测试, 1000条时非常卡；100条没问题  
+```
 python run_block.py
+```
 
 
 ### 2.2 训练(可用)
 * 1)不训练，仅显示参数  
+```
 python runtest_all\runtest_model_calc.py --mean=mean
+```
 
 * 2)训练10步，一般电脑都能运行  
+```
 python runtest_all\runtest_model_calc.py --train=true --test=false --mean=mean --batch_size=40 --training_steps=10
+```
 
 * 3)训练10步，更换指标为max_mean，f1值最大  
+```
 python runtest_all\runtest_model_calc.py --train=true --test=false --mean=max_mean --batch_size=40 --training_steps=10 --learning_rate=5e-5
+```
 
 * 4)训练60步  
+```
 python runtest_all\runtest_model_calc.py --train=true --test=false --mean=mean --batch_size=120 --training_steps=30 --start_check_step=10 --learning_rate=2e-5
-	
+```
 
 ### 2.3 预测(可用)
 * 1)混合指标(max_mean)  
+```
 python runtest_all\runtest_model.py --train=true --test=false --mean=max_mean
+```
 
 * 2)单一指标(mean)  
+```
 python runtest_all\runtest_model.py --train=true --test=false --mean=mean
+```
 
 * 3)单一指标(max)  
 python runtest_all\runtest_model.py --train=true --test=false --mean=max
