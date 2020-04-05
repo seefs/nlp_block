@@ -47,7 +47,7 @@ def main(_):
     print ("  test: %s" % (FLAGS.test))
     print ("  mean: %s" % (FLAGS.mean))              # 'mean', 'max', 'max_mean'
     print ("  save_data: %s" % (FLAGS.save_np_data)) # 输出比较值(np)
-    print ("  add_hide_seq: %s" % (FLAGS.add_hide_seq)) # 输出比较值(np)
+    print ("  add_hide_seq: %s" % (FLAGS.add_hide_seq)) # 是否取消隐藏编码
     
     data = LoadData(sample_size=None, train_enable=FLAGS.train, test_enable=FLAGS.test, add_hide_seq=FLAGS.add_hide_seq)
     data.show_data_shape()
