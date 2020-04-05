@@ -79,14 +79,16 @@ python_w runtest_all\runtest_model.py --train=true --test=false --mean=max
 
 4)输出中间数据(速度有些慢，用于调试最佳序数，见3.1)
 python_w runtest_all\runtest_model.py --train=true --test=false --mean=max_mean --save_np_data=true
-```
+
 5)删除隐藏模式(add_hide_seq)
 python_w runtest_all\runtest_model.py --train=true --test=false --mean=max_mean --add_hide_seq=false
 
+```
+
 * 查看详细结果：  
-data\debug\result_train_calc.txt
+[data\debug\result_train_calc.txt](data/debug/result_train_calc.txt)
 * 查看中间输出：(用于调试最佳序数，见3.1)  
-data\debug\brd_sum.txt
+[data\debug\brd_sum.txt](data/debug/brd_sum.txt)
 
 * 运行结果(max_mean)：  　[查看大图](/images/screenshot/long/3.4.5_max_mean.jpg)<br>
 ![train1](/images/screenshot/short/3.4.5_max_mean.jpg)
@@ -163,10 +165,9 @@ python_w runtest\runtest_load.py	--test_type=save_tokens
 * 查看截取数据：  
 data\csv\redata_1_to_200\train_xxx.csv
 
-* 查看详细分词过程：  
-data\debug\text_split_train.txt
+* 查看详细分词过程：
+[data\debug\text_split_train.txt](data/debug/text_split_train.txt)
 
-* 运行结果：  
 ``` 
 句子  0: 怎么更改xx手机号码
 jieba  : ['怎么', '更改', 'xx', '手机号码']
@@ -185,8 +186,8 @@ python_w runtest\runtest_seq.py  --test_type=m2n
 2)词-->编码-->填充隐藏词性
 python_w runtest\runtest_seq.py  --test_type=tokens_parsing
 ```
-* 运行结果：  　[查看大图](/images/screenshot/long/3.4.1 tokens_parsing.jpg)<br>
-![train1](/images/screenshot/short/3.4.1 tokens_parsing.jpg)
+* 运行结果：  　[查看大图](/images/screenshot/long/3.4.1_tokens_parsing.jpg)<br>
+![train1](/images/screenshot/short/3.4.1_tokens_parsing.jpg)
 
 ### 4.3.分词
 * 对一个或几个的句子分词，注意  在代码中增加句子内容  
