@@ -88,17 +88,17 @@ data\debug\result_train_calc.txt
 * 查看中间输出：(用于调试最佳序数，见3.1)  
 data\debug\brd_sum.txt
 
-* 运行结果(max_mean)：  　[查看大图](/images/screenshot/long/3.4.5 max_mean.jpg)<br>
-![train1](/images/screenshot/short/3.4.5 max_mean.jpg)
+* 运行结果(max_mean)：  　[查看大图](/images/screenshot/long/3.4.5_max_mean.jpg)<br>
+![train1](/images/screenshot/short/3.4.5_max_mean.jpg)
 
-* 运行结果(mean)：  　[查看大图](/images/screenshot/long/3.4.5 mean.jpg)<br>
-![train1](/images/screenshot/short/3.4.5 mean.jpg)
+* 运行结果(mean)：  　[查看大图](/images/screenshot/long/3.4.5_mean.jpg)<br>
+![train1](/images/screenshot/short/3.4.5_mean.jpg)
 
-* 运行结果(max)：  　[查看大图](/images/screenshot/long/3.4.5 max.jpg)<br>
-![train1](/images/screenshot/short/3.4.5 max.jpg)
+* 运行结果(max)：  　[查看大图](/images/screenshot/long/3.4.5_max.jpg)<br>
+![train1](/images/screenshot/short/3.4.5_max.jpg)
 
-* 运行结果(add_hide_seq)：  　[查看大图](/images/screenshot/long/4 delete seq.jpg)<br>
-![train1](/images/screenshot/short/4 delete seq.jpg)
+* 运行结果(add_hide_seq)：  　[查看大图](/images/screenshot/long/4_delete_seq.jpg)<br>
+![train1](/images/screenshot/short/4_delete_seq.jpg)
 
 
 ### 3.参数分析
