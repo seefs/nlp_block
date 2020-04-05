@@ -19,6 +19,7 @@ flags.DEFINE_string("mean", None, "mean, max or max_mean.")
 flags.DEFINE_bool("train", False, "train enable.")
 flags.DEFINE_bool("test", False,  "test enable.")
 flags.DEFINE_bool("save_np_data", False, "save np data.")
+flags.DEFINE_bool("add_hide_seq", True, "add hide seq.")
 
 
 # path
@@ -46,8 +47,9 @@ def main(_):
     print ("  test: %s" % (FLAGS.test))
     print ("  mean: %s" % (FLAGS.mean))              # 'mean', 'max', 'max_mean'
     print ("  save_data: %s" % (FLAGS.save_np_data)) # 输出比较值(np)
+    print ("  add_hide_seq: %s" % (FLAGS.add_hide_seq)) # 输出比较值(np)
     
-    data = LoadData(sample_size=None, train_enable=FLAGS.train, test_enable=FLAGS.test)
+    data = LoadData(sample_size=None, train_enable=FLAGS.train, test_enable=FLAGS.test, add_hide_seq=FLAGS.add_hide_seq)
     data.show_data_shape()
     
     model = create_model(data.max_vocab_len, data.max_seq_len, data.max_modes_len, h5_file=h5_file, debug=FLAGS.save_np_data, mean=FLAGS.mean, save_data=FLAGS.save_np_data)

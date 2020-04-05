@@ -163,7 +163,7 @@ class LoadData:
     DATA_COLUMN2 = "sentence2"
     LABEL_COLUMN = "polarity"
 
-    def __init__(self, sub_path='', sample_size=None, train_enable=True, test_enable=True):
+    def __init__(self, sub_path='', sample_size=None, train_enable=True, test_enable=True, add_hide_seq=True):
         self.token_chg = TokenizerChg(db_path=sqlite3_file)
         self.tokenizer = Tokenizer(num_words=None)
         self.train_enable  = train_enable
@@ -172,6 +172,7 @@ class LoadData:
         self.max_vocab_len = 0
         self.max_seq_len   = 0
         self.sub_path      = sub_path
+        self.add_hide_seq  = add_hide_seq
 
         # load pre
         self.max_seq_len = 0
@@ -193,7 +194,7 @@ class LoadData:
         self._text_to_ids()
         
         # add hide mode
-        self._add_hide_mode()
+        self._add_hide_mode(add_hide_seq=self.add_hide_seq)
 
         # 分块用到cnt, 暂时只能这里改dim
         if self.train_enable:
@@ -203,16 +204,16 @@ class LoadData:
             self.test_cnt1 = tf.expand_dims(self.test_cnt1, -1)
             self.test_cnt2 = tf.expand_dims(self.test_cnt2, -1)
         
-    def _add_hide_mode(self, debug=False):
+    def _add_hide_mode(self, debug=False, add_hide_seq=True):
         # add m2n
         self.max_modes_len = 0
         if self.train_enable:
             #n1
-            self.train_n1,self.train_mi1 = m2n(self.train_m1, self.train_cnt1, max_space=5, debug=debug)
+            self.train_n1,self.train_mi1 = m2n(self.train_m1, self.train_cnt1, max_space=5, debug=debug, add_hide_seq=add_hide_seq)
             max_nlen = max([len(i) for i in self.train_n1])
             self.max_modes_len = max(self.max_modes_len, max_nlen)
             #n2
-            self.train_n2,self.train_mi2 = m2n(self.train_m2, self.train_cnt2, max_space=5, debug=debug)
+            self.train_n2,self.train_mi2 = m2n(self.train_m2, self.train_cnt2, max_space=5, debug=debug, add_hide_seq=add_hide_seq)
             max_nlen = max([len(i) for i in self.train_n2])
             self.max_modes_len = max(self.max_modes_len, max_nlen)
             #只保存, 不读
@@ -220,11 +221,11 @@ class LoadData:
             #save_preprocess_data(self.train_n2, sub_path=self.sub_path,   name='train_n2')
         if self.test_enable:
             #n1
-            self.test_n1,self.test_mi1 = m2n(self.test_m1, self.test_cnt1, max_space=5, debug=debug)
+            self.test_n1,self.test_mi1 = m2n(self.test_m1, self.test_cnt1, max_space=5, debug=debug, add_hide_seq=add_hide_seq)
             max_nlen = max([len(i) for i in self.test_n1])
             self.max_modes_len = max(self.max_modes_len, max_nlen)
             #n2
-            self.test_n2,self.test_mi2 = m2n(self.test_m2, self.test_cnt2, max_space=5, debug=debug)
+            self.test_n2,self.test_mi2 = m2n(self.test_m2, self.test_cnt2, max_space=5, debug=debug, add_hide_seq=add_hide_seq)
             max_nlen = max([len(i) for i in self.test_n2])
             self.max_modes_len = max(self.max_modes_len, max_nlen)
             #只保存, 不读

@@ -184,14 +184,14 @@ def get_m2n_from_seq(k1, k2, max_space=4, debug=False):
             return item[i_a:i_b+1]
     return get_m2n_from_custom(k1, k2, debug=debug)
     
-def m2n(m, cnt, max_space=4, debug=False, add_seq=True):
+def m2n(m, cnt, max_space=4, debug=False, add_hide_seq=True):
     n_list, ni_list = [],[]
     for _,(_m, _cnt) in enumerate(zip(m, cnt)):
         n_row, ni_row = [],[]
         seq = _m[0:1]
         for i in range(_cnt-1):
             ni_row.append(len(n_row))
-            if add_seq and _m[i] != 0 and _m[i+1] != 0 and _m[i] != _m[i+1]:
+            if add_hide_seq and _m[i] != 0 and _m[i+1] != 0 and _m[i] != _m[i+1]:
                 seq = get_m2n_from_seq(_m[i], _m[i+1], max_space=max_space, debug=debug)
             else:
                 seq = _m[i:i+2]

@@ -109,7 +109,7 @@ class RunData:
         self.is_use_check_stop  = is_use_check_stop
         self.check_stop_acc  = init_stop_acc
         self.check_stop_f1  = init_stop_f1
-        self.start_check_step  = init_stop_f1
+        self.start_check_step  = start_check_step
         self.diff_stop_step  = diff_stop_step
 
     def init_data(self):
@@ -184,7 +184,7 @@ def check_run_stop(step, data, model, mRun):
             mRun.check_stop_f1   = f1_score
             # 更新weights, 动态改变结束步长
             if mRun.cur_stop_step>0:
-                print(">>>>> update stop step: %s, min f1 = %f"%(step+mRun.diff_stop_step, mRun.check_stop_f1))
+                print(">>>>> useful data. update stop step: %s, min f1 = %f"%(step+mRun.diff_stop_step, mRun.check_stop_f1))
                 model.save_weights(h5_file.format(data.max_vocab_len), overwrite=True)
                 mRun.cur_save_cnt = mRun.cur_save_cnt + 1
                 # 第N步后退出:
@@ -216,7 +216,7 @@ def check_run_stop(step, data, model, mRun):
             mRun.check_stop_f1   = f1_score
             # 更新weights, 动态改变结束步长
             if mRun.cur_stop_step>0:
-                print(">>>>> update stop step: %s, min f1 = %f"%(step+mRun.diff_stop_step, mRun.check_stop_f1))
+                print(">>>>> useful data. update stop step: %s, min f1 = %f"%(step+mRun.diff_stop_step, mRun.check_stop_f1))
                 model.save_weights(h5_file.format(data.max_vocab_len), overwrite=True)
                 mRun.cur_save_cnt = mRun.cur_save_cnt + 1
                 # 第N步后退出:
