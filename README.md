@@ -63,55 +63,8 @@ python_w runtest_all\runtest_model_calc.py --train=true --test=false --mean=max_
 4) 训练60步  
 python_w runtest_all\runtest_model_calc.py --train=true --test=false --mean=mean --batch_size=120 --training_steps=30 --start_check_step=10 --learning_rate=2e-5
 ```
-* 运行结果：  
-```
->python runtest_all\runtest_model_calc.py --train=true --test=false --mean=mean --batch_size=40 --training_steps=10
-Using TensorFlow backend.
-           train_x1 (1000, 55)
-           train_x2 (1000, 55)
-           train_m1 (1000, 55)
-           train_m2 (1000, 55)
-          train_mi1 (1000, 55)
-          train_mi2 (1000, 55)
-           train_n1 (1000, 24)
-           train_n2 (1000, 24)
-         train_cnt1 (1000, 1)
-         train_cnt2 (1000, 1)
-            train_y (1000,)
-        sents_len 1000
-        max_vocab 1123
-      max_seq_len 55
-    max_modes_len 24
-  ==================
-  train_enable: True
-  test_enable: False
-  mean: mean
-  batch_size: 40
-  training_steps: 10
-  display_step: 1
-  learning_rate: 5e-05
-  h5_file: D:\project\NLP\nlp_block\data\model\atec_nlp_calc_1123.h5
-  data_file: D:\project\NLP\nlp_block\data\csv\\preprocess\train_x.CSV
-  ==================
->>>>> init min f1 = 0.712106
->>>>> init stop step: 9
-step: 1,  loss: 0.603769, accuracy: 0.775000, f1: 0.769231
-step: 2,  loss: 0.646214, accuracy: 0.725000, f1: 0.702703
-step: 3,  give up.
-step: 4,  loss: 0.617518, accuracy: 0.650000, f1: 0.650000
-step: 5,  give up.
->>>>> 6. useless data. acc = 0.717000, f1 = 0.712106 < 0.712106
-step: 6,  loss: 0.629095, accuracy: 0.725000, f1: 0.666667
->>>>> 7. useless data. acc = 0.717000, f1 = 0.712106 < 0.712106
-step: 7,  loss: 0.624920, accuracy: 0.725000, f1: 0.731707
->>>>> 8. useless data. acc = 0.717000, f1 = 0.712106 < 0.712106
-step: 8,  loss: 0.602516, accuracy: 0.800000, f1: 0.800000
->>>>> 9. useless data. acc = 0.716000, f1 = 0.711382 < 0.712106
-step: 9,  loss: 0.597490, accuracy: 0.825000, f1: 0.810811
->>>>> 10. useless data. acc = 0.716000, f1 = 0.711382 < 0.712106
-step: 10,  loss: 0.627660, accuracy: 0.750000, f1: 0.750000
->>>>> Save 0 times. predict: accuracy: 0.716000, f1: 0.712551
-```
+* 运行结果：  　[查看大图](/images/screenshot/train/train2.jpg)<br>
+![train1](/images/screenshot/train/train1.jpg)
 
 ### 2.3.预测(可用)
 ```
@@ -127,79 +80,26 @@ python_w runtest_all\runtest_model.py --train=true --test=false --mean=max
 4)输出中间数据(速度有些慢，用于调试最佳序数，见3.1)
 python_w runtest_all\runtest_model.py --train=true --test=false --mean=max_mean --save_np_data=true
 ```
+5)删除隐藏模式(add_hide_seq)
+python_w runtest_all\runtest_model.py --train=true --test=false --mean=max_mean --add_hide_seq=false
 
 * 查看详细结果：  
 data\debug\result_train_calc.txt
 * 查看中间输出：(用于调试最佳序数，见3.1)  
 data\debug\brd_sum.txt
 
-* 运行结果：  
-```
->python runtest_all\runtest_model.py --train=true --test=false --mean=max_mean
-Using TensorFlow backend.
-  train: True
-  test: False
-  mean: max_mean
-  save_data: False
-           train_x1 (1000, 55)
-           train_x2 (1000, 55)
-           train_m1 (1000, 55)
-           train_m2 (1000, 55)
-          train_mi1 (1000, 55)
-          train_mi2 (1000, 55)
-           train_n1 (1000, 24)
-           train_n2 (1000, 24)
-         train_cnt1 (1000, 1)
-         train_cnt2 (1000, 1)
-            train_y (1000,)
-        sents_len 1000
-        max_vocab 1123
-      max_seq_len 55
-    max_modes_len 24
-Model: "model"
-__________________________________________________________________________________________________
-Layer (type)                    Output Shape         Param #     Connected to
-==================================================================================================
-x1 (InputLayer)                 [(None, 55)]         0
-__________________________________________________________________________________________________
-x2 (InputLayer) 				[(None, 55)]		 0
-__________________________________________________________________________________________________
-m1 (InputLayer) 				[(None, 55)]		 0
-__________________________________________________________________________________________________
-m2 (InputLayer) 				[(None, 55)]		 0
-__________________________________________________________________________________________________
-mi1 (InputLayer)				[(None, 55)]		 0
-__________________________________________________________________________________________________
-mi2 (InputLayer)				[(None, 55)]		 0
-__________________________________________________________________________________________________
-n1 (InputLayer) 				[(None, 24)]		 0
-__________________________________________________________________________________________________
-n2 (InputLayer) 				[(None, 24)]		 0
-__________________________________________________________________________________________________
-cnt1 (InputLayer)				[(None, 1)] 		 0
-__________________________________________________________________________________________________
-cnt2 (InputLayer)				[(None, 1)] 		 0
-__________________________________________________________________________________________________
-block_net (BlockNet)			(None, 2)			 38182		 x1[0][0]
-																 x2[0][0]
-																 m1[0][0]
-																 m2[0][0]
-																 mi1[0][0]
-																 mi2[0][0]
-																 n1[0][0]
-																 n2[0][0]
-																 cnt1[0][0]
-																 cnt2[0][0]
-==================================================================================================
-Total params: 38,182
-Trainable params: 38,182
-Non-trainable params: 0
-__________________________________________________________________________________________________
-  pred--loss: tf.Tensor(0.6208773, shape=(), dtype=float32)
-  pred--acc:  tf.Tensor(0.736, shape=(), dtype=float32)
-  pred--f1:   tf.Tensor(0.763864, shape=(), dtype=float32)
-save train_calc result cnt=1000
-```
+* 运行结果(max_mean)：  　[查看大图](/images/screenshot/long/3.4.5 max_mean.jpg)<br>
+![train1](/images/screenshot/short/3.4.5 max_mean.jpg)
+
+* 运行结果(mean)：  　[查看大图](/images/screenshot/long/3.4.5 mean.jpg)<br>
+![train1](/images/screenshot/short/3.4.5 mean.jpg)
+
+* 运行结果(max)：  　[查看大图](/images/screenshot/long/3.4.5 max.jpg)<br>
+![train1](/images/screenshot/short/3.4.5 max.jpg)
+
+* 运行结果(add_hide_seq)：  　[查看大图](/images/screenshot/long/4 delete seq.jpg)<br>
+![train1](/images/screenshot/short/4 delete seq.jpg)
+
 
 ### 3.参数分析
 ### 3.1 计算最佳系数
@@ -285,7 +185,8 @@ python_w runtest\runtest_seq.py  --test_type=m2n
 2)词-->编码-->填充隐藏词性
 python_w runtest\runtest_seq.py  --test_type=tokens_parsing
 ```
-
+* 运行结果：  　[查看大图](/images/screenshot/long/3.4.1 tokens_parsing.jpg)<br>
+![train1](/images/screenshot/short/3.4.1 tokens_parsing.jpg)
 
 ### 4.3.分词
 * 对一个或几个的句子分词，注意  在代码中增加句子内容  
